@@ -15,6 +15,7 @@ namespace HostsUpdater
         public string ApplicationTitle { get; set; }
         public string StevenBlacksHostsFileUrl { get; set; }
         public string AmpHostsFileUrl { get; set; }
+        public int MaxAgeOfTempFilesInDays { get; set; }
 
         #endregion
 
