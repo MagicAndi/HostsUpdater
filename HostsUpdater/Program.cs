@@ -51,8 +51,7 @@ namespace HostsUpdater
                 return Path.Combine(HostsFolderPath, string.Format("HostsDownload-{0}.txt", datestamp));
             }          
         }
-
-
+        
         private static string AmpsDownloadFilePath
         {
             get
@@ -68,18 +67,30 @@ namespace HostsUpdater
         {
             logger.Trace(LogHelper.BuildMethodEntryTrace());
 
+            var hostsFilePath = Path.Combine(HostsFolderPath, "hosts");
+            var hostsFile = new FileInfo(HostsDownloadFilePath);
+            
+            if (hostsFile.LastWriteTime > DateTime.Now.AddDays(-1))
+            {
+                logger.Info("Exiting as hosts file was updated within last 24 hours.");
+                return;
+            }
+
             try
             {
                 DownloadHostsData();
                 StopService(BlocksiteServiceName); // Stop the DNS cache?
                 RebuildHostsFile();
                 FlushDns();
-                StartService(BlocksiteServiceName);
-                CleanupTemporaryFiles();
             }
             catch (Exception ex)
             {
                 logger.Error(ex, "Service failed when preventing changes to HOSTS file.");
+            }
+            finally
+            {
+                StartService(BlocksiteServiceName);
+                CleanupTemporaryFiles();
             }
 
             logger.Trace(LogHelper.BuildMethodExitTrace());
@@ -126,13 +137,22 @@ namespace HostsUpdater
         private static void DownloadHostsData()
         {
             logger.Trace(LogHelper.BuildMethodEntryTrace());
-            
+
+            var webClient = new WebClient();
+
             var hostsDownloadFile = new FileInfo(HostsDownloadFilePath);                       
-            WebClient webClient = new WebClient();
-            webClient.DownloadFile(AppScope.Configuration.StevenBlacksHostsFileUrl, hostsDownloadFile.FullName);
+            if(!hostsDownloadFile.Exists)
+            {
+                logger.Info("Downloading file '" + HostsDownloadFilePath + "'.");
+                webClient.DownloadFile(AppScope.Configuration.StevenBlacksHostsFileUrl, hostsDownloadFile.FullName);
+            }
             
             var ampsDownloadFile = new FileInfo(AmpsDownloadFilePath);
-            webClient.DownloadFile(AppScope.Configuration.AmpHostsFileUrl, ampsDownloadFile.FullName);
+            if (!ampsDownloadFile.Exists)
+            {
+                logger.Info("Downloading file '" + AmpsDownloadFilePath + "'.");
+                webClient.DownloadFile(AppScope.Configuration.AmpHostsFileUrl, ampsDownloadFile.FullName);
+            }
 
             logger.Trace(LogHelper.BuildMethodExitTrace());
         }
@@ -266,7 +286,6 @@ namespace HostsUpdater
 
             logger.Trace(LogHelper.BuildMethodExitTrace());
         }
-
 
         #endregion Private Methods
     }
