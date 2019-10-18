@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Westwind.Utilities.Configuration;
 
-
 namespace HostsUpdater
 {
     public class ApplicationConfiguration : AppConfiguration
