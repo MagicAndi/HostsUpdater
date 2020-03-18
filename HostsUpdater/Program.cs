@@ -70,11 +70,11 @@ namespace HostsUpdater
             var hostsFilePath = Path.Combine(HostsFolderPath, "hosts");
             var hostsFile = new FileInfo(HostsDownloadFilePath);
             
-            if (hostsFile.LastWriteTime > DateTime.Now.AddDays(-1))
-            {
-                logger.Info("Exiting as hosts file was updated within last 24 hours.");
-                return;
-            }
+            //if (hostsFile.LastWriteTime > DateTime.Now.AddDays(-1))
+            //{
+            //    logger.Info("Exiting as hosts file was updated within last 24 hours.");
+            //    return;
+            //}
 
             try
             {
