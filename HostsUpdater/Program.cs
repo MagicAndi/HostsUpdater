@@ -67,14 +67,11 @@ namespace HostsUpdater
         {
             logger.Trace(LogHelper.BuildMethodEntryTrace());
 
-            var hostsFilePath = Path.Combine(HostsFolderPath, "hosts");
-            var hostsFile = new FileInfo(HostsDownloadFilePath);
-            
-            //if (hostsFile.LastWriteTime > DateTime.Now.AddDays(-1))
-            //{
-            //    logger.Info("Exiting as hosts file was updated within last 24 hours.");
-            //    return;
-            //}
+            if(DateTime.Now.DayOfWeek != DayOfWeek.Friday)
+            {
+                logger.Info("Exiting as it is not Friday.");
+                return;
+            }
 
             try
             {
@@ -85,7 +82,7 @@ namespace HostsUpdater
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "Service failed when preventing changes to HOSTS file.");
+                logger.Error(ex, "Service failed when trying to update HOSTS file.");
             }
             finally
             {
