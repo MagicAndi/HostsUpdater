@@ -67,7 +67,7 @@ namespace HostsUpdater
         {
             logger.Trace(LogHelper.BuildMethodEntryTrace());
 
-            if(DateTime.Now.DayOfWeek != DayOfWeek.Friday)
+            if(DateTime.Now.DayOfWeek != DayOfWeek.Wednesday)
             {
                 logger.Info("Exiting as it is not Friday.");
                 return;
