@@ -67,15 +67,27 @@ namespace HostsUpdater
         {
             logger.Trace(LogHelper.BuildMethodEntryTrace());
 
-            if(DateTime.Now.DayOfWeek != DayOfWeek.Wednesday)
+            var today = DateTime.Now.DayOfWeek;
+            var hostsDownloadUrl = "";
+
+            if (today == DayOfWeek.Monday)
             {
-                logger.Info("Exiting as it is not Friday.");
+                hostsDownloadUrl = AppScope.Configuration.StevenBlacksHostsFileUrl;
+            }
+            else if ((today == DayOfWeek.Saturday) || (today == DayOfWeek.Sunday))
+            {
+                hostsDownloadUrl = AppScope.Configuration.SteveBlacksHostsIncludingSocialFileUrl;
+            }
+            
+            if(string.IsNullOrEmpty(hostsDownloadUrl))
+            {
+                logger.Info("Exiting the hosts download URL has not been set.");
                 return;
             }
 
             try
             {
-                DownloadHostsData();
+                DownloadHostsData(hostsDownloadUrl);
                 StopService(BlocksiteServiceName); // Stop the DNS cache?
                 RebuildHostsFile();
                 FlushDns();
@@ -131,7 +143,7 @@ namespace HostsUpdater
             }
         }
 
-        private static void DownloadHostsData()
+        private static void DownloadHostsData(string hostsDownloadUrl)
         {
             logger.Trace(LogHelper.BuildMethodEntryTrace());
 
@@ -141,7 +153,7 @@ namespace HostsUpdater
             if(!hostsDownloadFile.Exists)
             {
                 logger.Info("Downloading file '" + HostsDownloadFilePath + "'.");
-                webClient.DownloadFile(AppScope.Configuration.StevenBlacksHostsFileUrl, hostsDownloadFile.FullName);
+                webClient.DownloadFile(hostsDownloadUrl, hostsDownloadFile.FullName);
             }
             
             var ampsDownloadFile = new FileInfo(AmpsDownloadFilePath);
