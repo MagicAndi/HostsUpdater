@@ -70,14 +70,14 @@ namespace HostsUpdater
             var today = DateTime.Now.DayOfWeek;
             var hostsDownloadUrl = "";
 
-            if (today == DayOfWeek.Monday)
+            if (today == DayOfWeek.Friday)
             {
-                hostsDownloadUrl = AppScope.Configuration.StevenBlacksHostsFileUrl;
+                hostsDownloadUrl = AppScope.Configuration.SteveBlacksHostsFileUrl;
             }
-            else if ((today == DayOfWeek.Saturday) || (today == DayOfWeek.Sunday))
-            {
-                hostsDownloadUrl = AppScope.Configuration.SteveBlacksHostsIncludingSocialFileUrl;
-            }
+            //else if ((today == DayOfWeek.Saturday) || (today == DayOfWeek.Sunday))
+            //{
+            //    hostsDownloadUrl = AppScope.Configuration.SteveBlacksHostsIncludingSocialFileUrl;
+            //}
             
             if(string.IsNullOrEmpty(hostsDownloadUrl))
             {
