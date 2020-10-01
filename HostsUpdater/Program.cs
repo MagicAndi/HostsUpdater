@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.ServiceProcess;
 
+using CommandLine;
 using NLog;
 
 using HostsUpdater.Utilities;
@@ -34,13 +35,13 @@ namespace HostsUpdater
             get { return "BlocksiteService"; }
         }
 
-        private static string HostsFolderPath 
+        private static string HostsFolderPath
         {
             get
             {
                 var systemPath = Environment.GetFolderPath(Environment.SpecialFolder.System);
                 return Path.Combine(systemPath, @"drivers\etc");
-            }            
+            }
         }
 
         private static string HostsDownloadFilePath
@@ -49,9 +50,9 @@ namespace HostsUpdater
             {
                 var datestamp = DateTime.Now.ToString("ddMMyyyy");
                 return Path.Combine(HostsFolderPath, string.Format("HostsDownload-{0}.txt", datestamp));
-            }          
+            }
         }
-        
+
         private static string AmpsDownloadFilePath
         {
             get
@@ -66,20 +67,23 @@ namespace HostsUpdater
         static void Main(string[] args)
         {
             logger.Trace(LogHelper.BuildMethodEntryTrace());
-
-            var today = DateTime.Now.DayOfWeek;
             var hostsDownloadUrl = "";
 
-            if (today == DayOfWeek.Friday)
-            {
-                hostsDownloadUrl = AppScope.Configuration.SteveBlacksHostsFileUrl;
-            }
-            //else if ((today == DayOfWeek.Saturday) || (today == DayOfWeek.Sunday))
-            //{
-            //    hostsDownloadUrl = AppScope.Configuration.SteveBlacksHostsIncludingSocialFileUrl;
-            //}
-            
-            if(string.IsNullOrEmpty(hostsDownloadUrl))
+            Parser.Default.ParseArguments<Options>(args)
+                  .WithParsed<Options>(o =>
+                  {
+                      if (o.BlockSocialMedia)
+                      {
+                          hostsDownloadUrl = AppScope.Configuration.SteveBlacksHostsIncludingSocialFileUrl;
+                      }
+                      else
+                      {
+                          hostsDownloadUrl = AppScope.Configuration.SteveBlacksHostsFileUrl;
+                      }
+                  }
+            );
+
+            if (string.IsNullOrEmpty(hostsDownloadUrl))
             {
                 logger.Info("Exiting the hosts download URL has not been set.");
                 return;
@@ -118,7 +122,7 @@ namespace HostsUpdater
         }
 
         #region Private Methods
-        
+
         private static void CleanupTemporaryFiles()
         {
             var currentFolder = new DirectoryInfo(HostsFolderPath);
@@ -149,13 +153,13 @@ namespace HostsUpdater
 
             var webClient = new WebClient();
 
-            var hostsDownloadFile = new FileInfo(HostsDownloadFilePath);                       
-            if(!hostsDownloadFile.Exists)
+            var hostsDownloadFile = new FileInfo(HostsDownloadFilePath);
+            if (!hostsDownloadFile.Exists)
             {
                 logger.Info("Downloading file '" + HostsDownloadFilePath + "'.");
                 webClient.DownloadFile(hostsDownloadUrl, hostsDownloadFile.FullName);
             }
-            
+
             var ampsDownloadFile = new FileInfo(AmpsDownloadFilePath);
             if (!ampsDownloadFile.Exists)
             {
@@ -165,10 +169,10 @@ namespace HostsUpdater
 
             logger.Trace(LogHelper.BuildMethodExitTrace());
         }
-        
+
         private static void StopService(string serviceName)
         {
-            var service  = new ServiceController();
+            var service = new ServiceController();
             service.ServiceName = serviceName;
 
             if (service.Status == ServiceControllerStatus.Running)
@@ -209,9 +213,9 @@ namespace HostsUpdater
 
             AppendFileContents(HostsDownloadFilePath, updatedHostsFilePath);
             AppendFileContents(AmpsDownloadFilePath, updatedHostsFilePath);
-            
+
             WhitelistDomains(updatedHostsFilePath);
-            
+
             var backupFilePath = Path.Combine(HostsFolderPath, "hosts.bak");
             OverwriteFile(updatedHostsFilePath, backupFilePath);
 
@@ -278,7 +282,7 @@ namespace HostsUpdater
                 }
             }
         }
-        
+
         private static void FlushDns()
         {
             logger.Trace(LogHelper.BuildMethodEntryTrace());
