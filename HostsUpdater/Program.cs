@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Net;
 using System.ServiceProcess;
 
-using CommandLine;
 using NLog;
 
 using HostsUpdater.Utilities;
@@ -67,25 +64,18 @@ namespace HostsUpdater
         static void Main(string[] args)
         {
             logger.Trace(LogHelper.BuildMethodEntryTrace());
-            var hostsDownloadUrl = "";
 
-            Parser.Default.ParseArguments<Options>(args)
-                  .WithParsed<Options>(o =>
-                  {
-                      if (o.BlockSocialMedia)
-                      {
-                          hostsDownloadUrl = AppScope.Configuration.SteveBlacksHostsIncludingSocialFileUrl;
-                      }
-                      else
-                      {
-                          hostsDownloadUrl = AppScope.Configuration.SteveBlacksHostsFileUrl;
-                      }
-                  }
-            );
+            if (DateTime.Now.DayOfWeek != DayOfWeek.Friday)
+            {
+                logger.Info("Exiting as it is not Friday.");
+                return;
+            }
+
+            var hostsDownloadUrl = AppScope.Configuration.SteveBlacksHostsFileUrl;
 
             if (string.IsNullOrEmpty(hostsDownloadUrl))
             {
-                logger.Info("Exiting the hosts download URL has not been set.");
+                logger.Info("Exiting as the hosts download URL has not been set.");
                 return;
             }
 
