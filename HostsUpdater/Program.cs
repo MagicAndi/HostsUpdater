@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Net;
 using System.ServiceProcess;
 
@@ -34,13 +32,13 @@ namespace HostsUpdater
             get { return "BlocksiteService"; }
         }
 
-        private static string HostsFolderPath 
+        private static string HostsFolderPath
         {
             get
             {
                 var systemPath = Environment.GetFolderPath(Environment.SpecialFolder.System);
                 return Path.Combine(systemPath, @"drivers\etc");
-            }            
+            }
         }
 
         private static string HostsDownloadFilePath
@@ -49,9 +47,9 @@ namespace HostsUpdater
             {
                 var datestamp = DateTime.Now.ToString("ddMMyyyy");
                 return Path.Combine(HostsFolderPath, string.Format("HostsDownload-{0}.txt", datestamp));
-            }          
+            }
         }
-        
+
         private static string AmpsDownloadFilePath
         {
             get
@@ -67,25 +65,30 @@ namespace HostsUpdater
         {
             logger.Trace(LogHelper.BuildMethodEntryTrace());
 
-            var hostsFilePath = Path.Combine(HostsFolderPath, "hosts");
-            var hostsFile = new FileInfo(HostsDownloadFilePath);
-            
-            //if (hostsFile.LastWriteTime > DateTime.Now.AddDays(-1))
-            //{
-            //    logger.Info("Exiting as hosts file was updated within last 24 hours.");
-            //    return;
-            //}
+            if (DateTime.Now.DayOfWeek != DayOfWeek.Friday)
+            {
+                logger.Info("Exiting as it is not Friday.");
+                return;
+            }
+
+            var hostsDownloadUrl = AppScope.Configuration.SteveBlacksHostsFileUrl;
+
+            if (string.IsNullOrEmpty(hostsDownloadUrl))
+            {
+                logger.Info("Exiting as the hosts download URL has not been set.");
+                return;
+            }
 
             try
             {
-                DownloadHostsData();
+                DownloadHostsData(hostsDownloadUrl);
                 StopService(BlocksiteServiceName); // Stop the DNS cache?
                 RebuildHostsFile();
                 FlushDns();
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "Service failed when preventing changes to HOSTS file.");
+                logger.Error(ex, "Service failed when trying to update HOSTS file.");
             }
             finally
             {
@@ -109,7 +112,7 @@ namespace HostsUpdater
         }
 
         #region Private Methods
-        
+
         private static void CleanupTemporaryFiles()
         {
             var currentFolder = new DirectoryInfo(HostsFolderPath);
@@ -134,19 +137,19 @@ namespace HostsUpdater
             }
         }
 
-        private static void DownloadHostsData()
+        private static void DownloadHostsData(string hostsDownloadUrl)
         {
             logger.Trace(LogHelper.BuildMethodEntryTrace());
 
             var webClient = new WebClient();
 
-            var hostsDownloadFile = new FileInfo(HostsDownloadFilePath);                       
-            if(!hostsDownloadFile.Exists)
+            var hostsDownloadFile = new FileInfo(HostsDownloadFilePath);
+            if (!hostsDownloadFile.Exists)
             {
                 logger.Info("Downloading file '" + HostsDownloadFilePath + "'.");
-                webClient.DownloadFile(AppScope.Configuration.StevenBlacksHostsFileUrl, hostsDownloadFile.FullName);
+                webClient.DownloadFile(hostsDownloadUrl, hostsDownloadFile.FullName);
             }
-            
+
             var ampsDownloadFile = new FileInfo(AmpsDownloadFilePath);
             if (!ampsDownloadFile.Exists)
             {
@@ -156,10 +159,10 @@ namespace HostsUpdater
 
             logger.Trace(LogHelper.BuildMethodExitTrace());
         }
-        
+
         private static void StopService(string serviceName)
         {
-            var service  = new ServiceController();
+            var service = new ServiceController();
             service.ServiceName = serviceName;
 
             if (service.Status == ServiceControllerStatus.Running)
@@ -200,9 +203,9 @@ namespace HostsUpdater
 
             AppendFileContents(HostsDownloadFilePath, updatedHostsFilePath);
             AppendFileContents(AmpsDownloadFilePath, updatedHostsFilePath);
-            
+
             WhitelistDomains(updatedHostsFilePath);
-            
+
             var backupFilePath = Path.Combine(HostsFolderPath, "hosts.bak");
             OverwriteFile(updatedHostsFilePath, backupFilePath);
 
@@ -269,7 +272,7 @@ namespace HostsUpdater
                 }
             }
         }
-        
+
         private static void FlushDns()
         {
             logger.Trace(LogHelper.BuildMethodEntryTrace());

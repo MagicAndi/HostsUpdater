@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<nlog xmlns="http://www.nlog-project.org/schemas/NLog.xsd"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <targets>
+    <target name="file" xsi:type="File" fileName="HostsUpdater_${date:format=ddMMyyyy}.txt" layout="${longdate} ${logger} ${level:upperCase=true} ${message} ${exception:format=tostring,StackTrace}"/>
+    <target name="console" xsi:type="ColoredConsole" useDefaultRowHighlightingRules="true" layout="${message} ${exception:format=tostring}${newline}" />
+  </targets>
+
+  <rules>
+    <logger name="*" minlevel="Info" writeTo="file" />
+    <logger name="*" minlevel="Trace" writeTo="console" />
+  </rules>
+</nlog>
