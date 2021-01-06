@@ -1,0 +1,79 @@
+﻿# Copyright (c) 1993-2009 Microsoft Corp.
+#
+# This is a sample HOSTS file used by Microsoft TCP/IP for Windows.
+#
+# This file contains the mappings of IP addresses to host names. Each
+# entry should be kept on an individual line. The IP address should
+# be placed in the first column followed by the corresponding host name.
+# The IP address and the host name should be separated by at least one
+# space.
+#
+# Additionally, comments (such as these) may be inserted on individual
+# lines or following the machine name denoted by a '#' symbol.
+#
+# For example:
+#
+#      102.54.94.97     rhino.acme.com          # source server
+#       38.25.63.10     x.acme.com              # x client host
+
+# localhost name resolution is handled within DNS itself.
+#	127.0.0.1       localhost
+#	::1             localhost
+
+
+# Alias for GUR network shares
+143.117.14.202		gur
+# 10.0.2.15			VM-SP2010DEV-AP
+10.0.2.15			SP2013-DEV-02
+
+# To Test SP2013 Production environment
+
+# 143.117.17.172 internet.qol.qub.ac.uk # SharePoint 2013
+# 143.117.17.173 home.qol.qub.ac.uk # SharePoint 2013
+# 143.117.17.174 intranet.qol.qub.ac.uk # SharePoint 2013
+
+# 143.117.17.175 learning.qol.qub.ac.uk # SharePoint 2013
+# 143.117.17.176 library.qol.qub.ac.uk # SharePoint 2013
+# 143.117.17.177 mobile.qol.qub.ac.uk # SharePoint 2013
+# 143.117.17.178 mysites.qol.qub.ac.uk # SharePoint 2013
+# 143.117.17.179 rbs.qol.qub.ac.uk # SharePoint 2013
+# 143.117.17.180 vle.qol.qub.ac.uk # SharePoint 2013
+
+
+## Azure Software Share ##
+
+172.30.1.5	lts-az-01
+
+#############################################################
+
+## Distractions ##
+
+## STOP!! DO YOU REALLY NEED TO USE THIS SITE? ##
+
+## Sites Blocked at Work and Home ##
+
+0.0.0.0 	dailymail.co.uk
+0.0.0.0 	www.dailymail.co.uk
+0.0.0.0		www.facebook.com
+0.0.0.0		facebook.com
+# 0.0.0.0 	linkedin.com
+# 0.0.0.0 	www.linkedin.com
+# 0.0.0.0	uk.linkedin.com
+0.0.0.0 	theulsterfry.com
+0.0.0.0 	www.irishnews.com
+0.0.0.0 	irishnews.com
+0.0.0.0 	sluggerotoole.com
+0.0.0.0 	www.sluggerotoole.com
+0.0.0.0 	imdb.com
+0.0.0.0 	www.imdb.com
+0.0.0.0 	gb.imdb.com
+0.0.0.0 	www.gb.imdb.com
+0.0.0.0		www.belfasttelegraph.co.uk
+0.0.0.0		belfasttelegraph.co.uk
+0.0.0.0 	80000hours.org
+0.0.0.0		news.ycombinator.com
+0.0.0.0		www.hntoplinks.com
+0.0.0.0		hntoplinks.com
+
+#############################################################
+
