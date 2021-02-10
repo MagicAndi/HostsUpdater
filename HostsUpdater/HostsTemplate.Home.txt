@@ -37,8 +37,8 @@
 # 0.0.0.0 	www.linkedin.com # Enabled for online training in QUB
 # 0.0.0.0		uk.linkedin.com  
 0.0.0.0 	theulsterfry.com
-0.0.0.0 	www.irishnews.com
-0.0.0.0 	irishnews.com
+# 0.0.0.0 	www.irishnews.com
+# 0.0.0.0 	irishnews.com
 # 0.0.0.0 	sluggerotoole.com
 # 0.0.0.0 	www.sluggerotoole.com
 0.0.0.0 	imdb.com
