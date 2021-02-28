@@ -6,7 +6,6 @@ using System.Linq;
 using System.Net;
 using System.ServiceProcess;
 
-using CommandLine;
 using NLog;
 
 using HostsUpdater.Utilities;
@@ -49,13 +48,6 @@ namespace HostsUpdater
                 return Path.Combine(HostsFolderPath, "HostsDownload.txt");
             }
         }
-        private static string HostsIncludingSocialDownloadFilePath
-        {
-            get
-            {
-                return Path.Combine(HostsFolderPath, "HostsIncludingSocialDownload.txt");
-            }
-        }
 
         private static string AmpsDownloadFilePath
         {
@@ -70,48 +62,19 @@ namespace HostsUpdater
         static void Main(string[] args)
         {
             logger.Trace(LogHelper.BuildMethodEntryTrace());
-            var hostsDownloadUrl = "";
-            var hostsDownloadFilePath = "";
+            var hostsDownloadUrl = AppScope.Configuration.SteveBlacksHostsIncludingSocialFileUrl;
 
-            Parser.Default.ParseArguments<Options>(args)
-                  .WithParsed<Options>(o =>
-                  {
-                      if (o.BlockSocialMedia)
-                      {
-                          hostsDownloadFilePath = HostsIncludingSocialDownloadFilePath;
-
-                          if (! IsHostsFileValid(HostsIncludingSocialDownloadFilePath))
-                          {
-                              hostsDownloadUrl = AppScope.Configuration.SteveBlacksHostsIncludingSocialFileUrl;
-                              
-                          }
-                      }
-                      else
-                      {
-                          hostsDownloadFilePath = HostsDownloadFilePath;
-
-                          if (!IsHostsFileValid(HostsDownloadFilePath))
-                          {
-                              hostsDownloadUrl = AppScope.Configuration.SteveBlacksHostsFileUrl;
-                          }
-                      }
-                  }
-            );
+            if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday || DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
+            {
+                hostsDownloadUrl = AppScope.Configuration.SteveBlacksHostsFileUrl;
+            }
 
             try
             {
-                if (!string.IsNullOrEmpty(hostsDownloadUrl))
-                {
-                    DownloadData(hostsDownloadUrl, hostsDownloadFilePath);
-                }
-
-                if (!IsHostsFileValid(AmpsDownloadFilePath))
-                {
-                    DownloadData(AppScope.Configuration.AmpHostsFileUrl, AmpsDownloadFilePath);
-                }
-
+                DownloadData(hostsDownloadUrl, HostsDownloadFilePath);
+                DownloadData(AppScope.Configuration.AmpHostsFileUrl, AmpsDownloadFilePath);
                 StopService(BlocksiteServiceName); // Stop the DNS cache?
-                RebuildHostsFile(hostsDownloadFilePath);
+                RebuildHostsFile();
                 FlushDns();
             }
             catch (Exception ex)
@@ -140,22 +103,6 @@ namespace HostsUpdater
         }
 
         #region Private Methods
-
-        private static bool IsHostsFileValid(string filePath)
-        {
-            logger.Trace(LogHelper.BuildMethodEntryTrace(new Dictionary<string, string>()
-                                    {{ "filePath", filePath }}));
-            bool isValid = false;
-
-            if(File.Exists(filePath))
-            {
-                isValid = (DateTime.Now - File.GetCreationTime(filePath)) < new TimeSpan(7, 0, 0, 0);
-            }
-
-
-            logger.Trace(LogHelper.BuildMethodExitTrace(isValid.ToString()));
-            return isValid;
-        }
 
         private static void CleanupTemporaryFiles()
         {
@@ -217,7 +164,7 @@ namespace HostsUpdater
             }
         }
 
-        private static void RebuildHostsFile(string hostsDownloadFilePath)
+        private static void RebuildHostsFile()
         {
             logger.Trace(LogHelper.BuildMethodEntryTrace());
 
@@ -233,7 +180,7 @@ namespace HostsUpdater
             var updatedHostsFilePath = Path.Combine(HostsFolderPath, string.Format("UpdatedHosts-{0}.txt", timestamp));
             hostsTemplateFile.CopyTo(updatedHostsFilePath);
 
-            AppendFileContents(hostsDownloadFilePath, updatedHostsFilePath);
+            AppendFileContents(HostsDownloadFilePath, updatedHostsFilePath);
             AppendFileContents(AmpsDownloadFilePath, updatedHostsFilePath);
 
             WhitelistDomains(updatedHostsFilePath);
