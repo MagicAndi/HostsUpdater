@@ -62,19 +62,11 @@ namespace HostsUpdater
         static void Main(string[] args)
         {
             logger.Trace(LogHelper.BuildMethodEntryTrace());
-            var hostsDownloadUrl = "";
+            var hostsDownloadUrl = AppScope.Configuration.SteveBlacksHostsIncludingSocialFileUrl;
 
-            if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday)
-            { 
-                hostsDownloadUrl = AppScope.Configuration.SteveBlacksHostsFileUrl;
-            }
-            else if(DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
+            if (DateTime.Now.DayOfWeek != DayOfWeek.Saturday)
             {
-                hostsDownloadUrl = AppScope.Configuration.SteveBlacksHostsIncludingSocialFileUrl;
-            }
-            else
-            {
-                logger.Info("Exiting as it is not the weekend.");
+                logger.Info("Exiting as it is not Saturday.");
                 return;
             }
 

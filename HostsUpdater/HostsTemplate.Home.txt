@@ -37,24 +37,65 @@
 # 0.0.0.0 	www.linkedin.com # Enabled for online training in QUB
 # 0.0.0.0		uk.linkedin.com  
 0.0.0.0 	theulsterfry.com
-# 0.0.0.0 	www.irishnews.com
-# 0.0.0.0 	irishnews.com
-# 0.0.0.0 	sluggerotoole.com
-# 0.0.0.0 	www.sluggerotoole.com
+0.0.0.0 	www.irishnews.com
+0.0.0.0 	irishnews.com
+0.0.0.0 	sluggerotoole.com
+0.0.0.0 	www.sluggerotoole.com
 0.0.0.0 	imdb.com
 0.0.0.0 	www.imdb.com
 0.0.0.0 	gb.imdb.com
 0.0.0.0 	www.gb.imdb.com
 0.0.0.0		www.belfasttelegraph.co.uk
 0.0.0.0		belfasttelegraph.co.uk
+0.0.0.0		www.irishnews.com
+0.0.0.0		irishnews.com
 0.0.0.0 	80000hours.org
 0.0.0.0		www.twitter.com
 0.0.0.0		twitter.com
 0.0.0.0		mobile.twitter.com
 0.0.0.0		www.mobile.twitter.com
 # 0.0.0.0		news.ycombinator.com
-# 0.0.0.0		www.hntoplinks.com
-# 0.0.0.0		hntoplinks.com
+0.0.0.0		www.hntoplinks.com
+0.0.0.0		hntoplinks.com
+
+# Nitter Instances
+
+0.0.0.0		twiiit.com
+0.0.0.0		twitit.gq
+0.0.0.0		nitter.dark.fail
+0.0.0.0		nitter.koyu.space
+0.0.0.0		twitr.gq
+0.0.0.0		nitter.exonip.de
+0.0.0.0		nitter.database.red
+0.0.0.0		nitter.hu
+0.0.0.0		nitter.skrep.in
+0.0.0.0		nitter.40two.app
+0.0.0.0		birdsite.xanny.family
+0.0.0.0		nitter.cattube.org
+0.0.0.0		nitter.actionsack.com
+0.0.0.0		nitter.mailstation.de
+0.0.0.0		nitter.namazso.eu
+0.0.0.0		nitter.ethibox.fr
+0.0.0.0		nitter.eu
+0.0.0.0		nitter.domain.glass
+0.0.0.0		nitter.unixfox.eu
+0.0.0.0		nitter.vxempire.xyz
+0.0.0.0		nitter.unixfox.eu
+0.0.0.0		nitter.cc
+0.0.0.0		tweet.lambda.dance
+0.0.0.0		nitter.kavin.rocks
+0.0.0.0		nitter.1d4.us
+0.0.0.0		nitter.fdn.fr
+0.0.0.0		nitter.tedomum.net
+0.0.0.0		nitter.nixnet.services
+0.0.0.0		nitter.pussthecat.org
+0.0.0.0		nitter.42l.fr
+0.0.0.0		nitter.net
+
+# Work Email
+
+0.0.0.0		qmail.qub.ac.uk
+0.0.0.0		outlook.office365.com
 
 #############################################################
 
